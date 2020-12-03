@@ -1,5 +1,5 @@
 with open("day2.txt", "rt") as file:
-    data = [x for x in file.readlines()]
+    data = file.readlines()
 
     valid = 0
     valid2 = 0
