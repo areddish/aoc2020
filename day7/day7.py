@@ -1,16 +1,10 @@
 def can_hold_shiny(c, mapping):
     for holds in mapping[c]:
-            if holds[1] == "shiny gold":
-                return True
-
-            if can_hold_shiny(holds[1], mapping):
+            if holds[1] == "shiny gold" or can_hold_shiny(holds[1], mapping):
                 return True
     return False
 
-def bags_in(color, mapping):
-    if mapping[color] == []:
-        return 0
-        
+def bags_in(color, mapping):       
     count = 0
     for bags in mapping[color]:
         count += bags[0] + bags[0] * bags_in(bags[1], mapping)
