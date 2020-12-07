@@ -10,6 +10,7 @@ def can_hold_shiny(c, mapping):
 def bags_in(color, mapping):
     if mapping[color] == []:
         return 0
+        
     count = 0
     for bags in mapping[color]:
         count += bags[0] + bags[0] * bags_in(bags[1], mapping)
@@ -46,10 +47,8 @@ with open("day7.txt", "rt") as file:
     print ("Part 1", can_hold)
 
     bag_count = 0
-    stack = ["shiny gold"]
-    while len(stack) > 0:
-        for bag_info in mapping[stack.pop()]:
-            bag_count += bag_info[0] + bag_info[0] * bags_in(bag_info[1], mapping)
+    for bag_info in mapping["shiny gold"]:
+        bag_count += bag_info[0] + bag_info[0] * bags_in(bag_info[1], mapping)
     
     print ("Part 2", bag_count)
 
