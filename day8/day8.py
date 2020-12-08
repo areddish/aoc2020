@@ -32,32 +32,30 @@ def run_program(instructions):
 with open("day8.txt", "rt") as file:
     data = file.read().splitlines()
 
-    ins = []
+    program = []
     for x in data:
-        p = x.split(" ")
-        op = p[0]
-        arg = int(p[1])
-        ins.append((op, arg))
+        op, arg_str = x.split(" ")
+        program.append((op, int(arg_str)))
 
-    print("Part 1", run_program(ins)[0])
+    print("Part 1", run_program(program)[0])
     looped_ip = 0
     last_changed = -1
     changed = 0
     result = None
-    while looped_ip < len(ins) - 1:
-        result, looped_ip = run_program(ins)
+    while looped_ip < len(program):
+        result, looped_ip = run_program(program)
         # didn't complete
-        if looped_ip < len(ins):
-            # restore
+        if looped_ip < len(program):
+            # Reverse last rewrite, if done
             if (last_changed != -1):
-                ins[last_changed] = (rewrite(ins[last_changed][0]), ins[last_changed][1])
+                program[last_changed] = (rewrite(program[last_changed][0]), program[last_changed][1])
                 changed = last_changed + 1
 
-            # find the next nop/jmp and change it
-            while(changed < len(ins)):
-                change = rewrite(ins[changed][0])
-                if change != ins[changed][0]:
-                    ins[changed] = (change, ins[changed][1])
+            # Find the next rewrite candidate and then try again
+            while(changed < len(program)):
+                change = rewrite(program[changed][0])
+                if change != program[changed][0]:
+                    program[changed] = (change, program[changed][1])
                     last_changed = changed
                     break
                 changed += 1
