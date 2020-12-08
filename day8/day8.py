@@ -1,3 +1,33 @@
+def rewrite(op):
+    if op == "nop":
+        return "jmp"
+    elif op == "jmp":
+        return "nop"
+    return op
+
+def run_program(instructions):
+    acc = 0
+    prev_acc = 0
+    ip = 0
+    ip_processed = set()
+    while ip < len(instructions) :
+        if (ip in ip_processed):
+            return prev_acc, ip
+
+        ip_processed.add(ip)
+        op, arg = instructions[ip]
+        if op == "acc":
+            acc += arg
+            ip += 1
+        elif op == "jmp":
+            ip = ip + arg
+        elif op == "nop":
+            ip += 1
+
+        prev_acc = acc
+
+    return acc, ip
+
 #with open("test.txt", "rt") as file:
 with open("day8.txt", "rt") as file:
     data = file.read().splitlines()
@@ -9,68 +39,27 @@ with open("day8.txt", "rt") as file:
         arg = int(p[1])
         ins.append((op, arg))
 
-    acc = 0
-    prevacc = 0
-    ip = 0
-    seen = set()
-    while (ip < len(ins)):
-        if (ip in seen):
-            print ("part 1", prevacc)
-            break
-
-        seen.add(ip)
-        op, arg = ins[ip]
-        if op == "acc":
-            acc += arg
-            ip += 1
-        elif op == "jmp":
-            ip = ip + arg
-        elif op == "nop":
-            ip += 1
-
-        prevacc = acc
-        
-    def toggle(i):
-        if i == "nop":
-            return "jmp"
-        elif i == "jmp":
-            return "nop"
-        return i
-
-    # part 2
-    acc = 0
-    ip = 0
-    seen = set()
+    print("Part 1", run_program(ins)[0])
+    looped_ip = 0
     last_changed = -1
     changed = 0
-    while (ip < len(ins)):
-        while (ip < len(ins)):
-            if (ip in seen):
-                # restore
-                if (last_changed != -1):
-                    ins[last_changed] = (toggle(ins[last_changed][0]), ins[last_changed][1])
-                    changed = last_changed + 1
+    result = None
+    while looped_ip < len(ins) - 1:
+        result, looped_ip = run_program(ins)
+        # didn't complete
+        if looped_ip < len(ins):
+            # restore
+            if (last_changed != -1):
+                ins[last_changed] = (rewrite(ins[last_changed][0]), ins[last_changed][1])
+                changed = last_changed + 1
 
-                # find the first nop/jmp and change it
-                while(changed < len(ins)):
-                    change = toggle(ins[changed][0])
-                    if change != ins[changed][0]:
-                        ins[changed] = (change, ins[changed][1])
-                        last_changed = changed
-                        break
-                    changed += 1
+            # find the first nop/jmp and change it
+            while(changed < len(ins)):
+                change = rewrite(ins[changed][0])
+                if change != ins[changed][0]:
+                    ins[changed] = (change, ins[changed][1])
+                    last_changed = changed
+                    break
+                changed += 1
 
-                ip = 0
-                seen = set()
-                acc = 0
-            else:
-                seen.add(ip)
-                op, arg = ins[ip]
-                if op == "acc":
-                    acc += arg
-                    ip += 1
-                elif op == "jmp":
-                    ip = ip + arg
-                elif op == "nop":
-                    ip += 1
-        print("Part 2", acc)
+    print("Part 2", result)
