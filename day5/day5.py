@@ -7,34 +7,37 @@ with open("day5.txt", "rt") as file:
 
     ids = []
     for bp in data:
-        s = 0
-        e = 127
-        size = 128
-        for x in bp[:7]:
-            choices = half(s,e, size)
-            if x == 'F':
-                s,e = choices[0]
-            elif x =='B':
-                s,e = choices[1]
-            size = size // 2
-        row = s
+        rs = 0
+        re = 127
+        row_size = 128
 
-        s = 0
-        e = 7
-        size = 8
-        for r in bp[7:]:
-            choices = half(s,e, size)
-            if r == 'L':
-                s,e = choices[0]
-            elif r =='R':
-                s,e = choices[1]
-            size = size // 2
-        ids.append(row * 8 + s)
+        cs = 0
+        ce = 7
+        col_size = 8
+
+        for x in bp:
+            row_choices = half(rs, re, row_size)
+            col_choices = half(cs, ce, col_size)
+
+            if x == 'F':
+                rs,re = row_choices[0]
+                row_size = row_size // 2
+            elif x =='B':
+                rs,re = row_choices[1]
+                row_size = row_size // 2
+            elif x == 'L':
+                cs,ce = col_choices[0]
+                col_size = col_size // 2
+            elif x =='R':
+                cs,ce = col_choices[1]
+                col_size = col_size // 2
+
+        ids.append(rs * 8 + cs)
 
 print("Part 1", max(ids))
 
 ids.sort()
-for x in range(128*8):
-    if x+1 in ids and x-1 in ids and not x in ids:
-        print ("Part 2", x)
+for x in range(len(ids)-1):
+    if ids[x+1] - ids[x] > 1:
+        print ("Part 2", ids[x] + 1)
             

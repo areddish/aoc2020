@@ -53,7 +53,7 @@ with open("day8.txt", "rt") as file:
                 ins[last_changed] = (rewrite(ins[last_changed][0]), ins[last_changed][1])
                 changed = last_changed + 1
 
-            # find the first nop/jmp and change it
+            # find the next nop/jmp and change it
             while(changed < len(ins)):
                 change = rewrite(ins[changed][0])
                 if change != ins[changed][0]:

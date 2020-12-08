@@ -1,5 +1,5 @@
 with open("day3.txt", "rt") as file:
-    data = [x.strip() for x in file.readlines()]
+    data = [x.strip() for x in file.read().splitlines()]
 
     width = len(data[0])
     height = len(data)
