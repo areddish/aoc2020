@@ -7,12 +7,11 @@ def rewrite(op):
 
 def run_program(instructions):
     acc = 0
-    prev_acc = 0
     ip = 0
     ip_processed = set()
     while ip < len(instructions) :
         if (ip in ip_processed):
-            return prev_acc, ip
+            return acc, False
 
         ip_processed.add(ip)
         op, arg = instructions[ip]
@@ -24,9 +23,7 @@ def run_program(instructions):
         elif op == "nop":
             ip += 1
 
-        prev_acc = acc
-
-    return acc, ip
+    return acc, True
 
 #with open("test.txt", "rt") as file:
 with open("day8.txt", "rt") as file:
@@ -38,14 +35,14 @@ with open("day8.txt", "rt") as file:
         program.append((op, int(arg_str)))
 
     print("Part 1", run_program(program)[0])
-    looped_ip = 0
+    terminated_clean = False
     last_changed = -1
     changed = 0
     result = None
-    while looped_ip < len(program):
-        result, looped_ip = run_program(program)
+    while not terminated_clean:
+        result, terminated_clean = run_program(program)
         # didn't complete
-        if looped_ip < len(program):
+        if not terminated_clean:
             # Reverse last rewrite, if done
             if (last_changed != -1):
                 program[last_changed] = (rewrite(program[last_changed][0]), program[last_changed][1])
