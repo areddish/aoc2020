@@ -24,12 +24,14 @@ with open("day10.txt", "rt") as file:
         runs.append(run)
         i += 1
 
-    # trim the ends
+    # trim the ends, as the boundaries between runs are difference
+    # of three and thus we have to keep those values.
     runs[0] = runs[0][:-1]
     for x in range(1,len(runs)):
         runs[x] = runs[x][1:-1]
 
-    # compute combinations
+    # compute combinations based on group size of numbers we have
+    # left to modify.
     combinations = 1
     for x in runs:
         numbers = len(x)
