@@ -4,8 +4,8 @@ def get_occupied(grid, x, y, use_line_of_sight=False):
     h = len(grid)
     count = 0
 
-    for o in [ (-1,-1), (1,1), (-1, 1), (1,-1), (0,1), (0,-1), (-1,0), (1,0)]:
-        dx,dy = o
+    for offset in [(-1,-1), (1,1), (-1, 1), (1,-1), (0,1), (0,-1), (-1,0), (1,0)]:
+        dx,dy = offset
         nx = x + dx
         ny = y + dy
         while use_line_of_sight and 0 <= nx < w and 0 <= ny < h and grid[ny][nx] == '.':
@@ -22,7 +22,7 @@ def deep_copy(l):
         new_l.append(x.copy())
     return new_l
 
-def run(prefix, use_line_of_sight, occupancy_threshold):
+def run(prefix, occupancy_threshold, use_line_of_sight = False):
     #with open("test.txt", "rt") as file:
     with open("day11.txt", "rt") as file:
         grid = [list(x) for x in file.read().splitlines()]
@@ -58,6 +58,6 @@ def run(prefix, use_line_of_sight, occupancy_threshold):
 
         print(prefix, count)
 
-run("Part 1", False, 4)
-run("Part 2", True, 5)
+run("Part 1", 4)
+run("Part 2", 5, True)
 
