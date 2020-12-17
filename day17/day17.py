@@ -16,7 +16,7 @@ def run_cycles(grid, dim, cycle_count = 6, consider_w=False):
     min_dim = -1
     max_dim = dim + 1
     while cycle < cycle_count + 1:
-        new_grid = {x:True if grid[x] else False for x in grid }            
+        new_grid = {}            
         for w in range(-cycle, cycle + 1) if consider_w else range(1):
             for z in range(-cycle, cycle + 1):
                 for y in range(min_dim, max_dim + 1):
@@ -26,14 +26,9 @@ def run_cycles(grid, dim, cycle_count = 6, consider_w=False):
                         if active:
                             if active_n == 3 or active_n == 2:
                                 new_grid[(x,y,z,w)] = True
-                            else:
-                                del new_grid[(x,y,z,w)]
                         else:
                             if active_n == 3:
                                 new_grid[(x,y,z,w)] = True
-                            else:
-                                if (x,y,z) in new_grid:
-                                    del new_grid[(x,y,z,w)]
 
         grid = new_grid
         cycle += 1
@@ -45,15 +40,11 @@ def run_cycles(grid, dim, cycle_count = 6, consider_w=False):
 with open("day17.txt") as file:
     dim = 0
     grid = {}
-    y = 0
-    z = 0
-    w = 0
-    for line in file.read().splitlines():
+    for y, line in enumerate(file.read().splitlines()):
         dim = len(line)
         for x,ch in enumerate(line):
             if ch == "#": 
-                grid[(x,y,z,w)] = True
-        y += 1
+                grid[(x,y,0,0)] = True
 
     print("Part 1", run_cycles(grid, dim))
     print("Part 2", run_cycles(grid, dim, consider_w=True))
