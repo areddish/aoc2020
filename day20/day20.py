@@ -21,7 +21,7 @@ def flip(data, horiztonal=True):
     return data_copy
 
 def rotate(data):
-    return list(zip(*data[::-1]))    
+    return [list(x) for x in zip(*data[::-1])]
 
 class Tile:
     def __init__(self, id, data):
@@ -70,55 +70,32 @@ class Tile:
     def orient(self, connected_id, dir):
         # If we are oriented, ignore
         # flip_status = 0
-        if dir == LEFT:
-            if  connected_id == self.edge_number(dir):
-                return
-            _, t, b, l, r = self.print_edges()
-
-            # If we are not in the current orientation, we need to flip first
-            if connected_id not in [t[0],b[0],l[0],r[0]]:            
-                if connected_id == r[1]:
-                    self.rot()
-                    self.rot()
-                    self.flip_vertical()
-                elif connected_id == l[1]:
-                    self.flip_vertical()
-                else:
-                    assert connected_id == t[1] or connected_id == b[1]
-                    self.flip_horizontal()
-                    
-
-            # Now rotate into position
-            while connected_id != self.edge_number(dir):
-                self.rot()
+        _, t, b, l, r = self.print_edges()            
+        # Top is opposite orientaion from bottom
+        # ---> Top
+        # <--- bottom
+        if connected_id == t[1]:
             return
-        elif dir == TOP:
-            _, t, b, l, r = self.print_edges()            
-            # Top is opposite orientaion from bottom
-            # ---> Top
-            # <--- bottom
-            if connected_id == t[1]:
-                return
 
-            # If we are not in the current orientation, we need to flip first
-            if connected_id not in [t[1],b[1],l[1],r[1]]:            
-                if connected_id == r[0]:
-                    self.rot()
-                    self.rot()
-                    self.rot()
-                    self.flip_horizontal()
-                elif connected_id == l[0]:
-                    self.flip_vertical()
-                    self.rot()
-                else:
-                    assert connected_id == t[0] or connected_id == b[0]
-                    self.flip_horizontal()
-                    
-
-            # Now rotate into position
-            while connected_id != self.edge_number(dir, reverse=True):
+        # If we are not in the current orientation, we need to flip first
+        if connected_id not in [t[1],b[1],l[1],r[1]]:            
+            if connected_id == r[0]:
                 self.rot()
-            return
+                self.rot()
+                self.rot()
+                self.flip_horizontal()
+            elif connected_id == l[0]:
+                self.flip_vertical()
+                self.rot()
+            else:
+                assert connected_id == t[0] or connected_id == b[0]
+                self.flip_horizontal()
+                
+
+        # Now rotate into position
+        while connected_id != self.edge_number(dir, reverse=True):
+            self.rot()
+        return
                 # if flip_status == 0:
                 #     self.flip_horizontal()
                 #     flip_status += 1
@@ -311,8 +288,8 @@ class Tile:
             self.rot()
             self.manip = 15          
 
-with open("test.txt") as file:
-#with open("day20.txt") as file:
+#with open("test.txt") as file:
+with open("day20.txt") as file:
     data = file.read().splitlines()
 
     tiles = {}
@@ -448,7 +425,7 @@ with open("test.txt") as file:
         # #     start = get_next_piece(start, direction)
         #     pass
         
-    image = flip(image, horiztonal=False)
+    #image = flip(image, horiztonal=False)
     # TODO multiplier
     im = Image.new(mode="RGB", size = (len(image[0]), len(image)))
     pix = im.load()
@@ -475,7 +452,7 @@ with open("test.txt") as file:
     while seamonsters_found == 0:
         for y in range(len(image) - 3):
             for x in range(len(image[0]) - 19):
-                is_sea_monster = False
+                is_sea_monster = True
                 for offset in seamonster_offset:
                     dx,dy = offset
                     if image[dy+y][dx+x]!= "#":
@@ -487,8 +464,9 @@ with open("test.txt") as file:
                         dx,dy = offset
                         image[dy+y][x+dx] = "O"
         
-        image = op[op_index](image)
-        op_index+=1
+        if seamonsters_found == 0:
+            image = op[op_index](image)
+            op_index+=1
 
     count = 0
     for y in range(len(image)):
