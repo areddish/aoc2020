@@ -444,7 +444,7 @@ with open("day20.txt") as file:
     #  0                  # 
     #  1#    ##    ##    ###
     #  2 #  #  #  #  #  #   
-    seamonster_offset = [(19,0), (0,1), (5,1), (6,1), (11,1), (12,1), (17,1), (18,1), (19,1), (1,2), (4,2), (7,2), (10,2), (13,2), (16,2)]
+    seamonster_offset = [(18,0), (0,1), (5,1), (6,1), (11,1), (12,1), (17,1), (18,1), (19,1), (1,2), (4,2), (7,2), (10,2), (13,2), (16,2)]
     seamonsters_found = 0
     op = [rotate, rotate, rotate, rotate, flip, rotate, rotate, rotate, rotate, lambda x: flip(x,horiztonal=False), rotate, rotate, rotate, rotate ]
     op_index = 0
@@ -466,6 +466,21 @@ with open("day20.txt") as file:
         if seamonsters_found == 0:
             image = op[op_index](image)
             op_index+=1
+
+    im = Image.new(mode="RGB", size = (len(image[0]), len(image)))
+    pix = im.load()
+    for y in range(len(image)):
+        for x in range(len(image[0])):
+            print(image[y][x], end="")
+            color = (0,0,0)
+            if image[y][x] == "#":
+                color= (255,0,0)
+            elif image[y][x] == "O":
+                color = (255,255,0)
+            pix[x,y] = color
+        print()
+    im.show()
+
 
     count = 0
     for y in range(len(image)):
