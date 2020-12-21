@@ -74,8 +74,8 @@ class Tile:
         # Top is opposite orientaion from bottom
         # ---> Top
         # <--- bottom
-        if connected_id == t[1]:
-            return
+        # if connected_id == t[1]:
+            # return
 
         # If we are not in the current orientation, we need to flip first
         if connected_id not in [t[1],b[1],l[1],r[1]]:            
@@ -95,7 +95,6 @@ class Tile:
         # Now rotate into position
         while connected_id != self.edge_number(dir, reverse=True):
             self.rot()
-        return
                 # if flip_status == 0:
                 #     self.flip_horizontal()
                 #     flip_status += 1
